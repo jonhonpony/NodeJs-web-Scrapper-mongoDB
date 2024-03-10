@@ -7,6 +7,7 @@ const { fetchData, addOrUpdateDataInMongoDB } = require('./RetriveData');
 
 const port = process.env.PORT || 1337;
 
+
 async function run() {
     await connectToMongoDB();
 

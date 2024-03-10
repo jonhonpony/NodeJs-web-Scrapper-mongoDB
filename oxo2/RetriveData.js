@@ -14,23 +14,57 @@ async function fetchData(url) {
         const first10AppRowDivs = appRowDivs.slice(0, 10);
 
         // Extracting information for each item in first10AppRowDivs
-        const data = first10AppRowDivs.map((index, element) => {
+        const data = await Promise.all(first10AppRowDivs.map(async (index, element) => {
             const versionLink = `https://www.apkmirror.com${$(element).find('.appRowTitle a').attr('href')}`;
-            const versionName = $(element).find('.appRowTitle a').text().trim();
+            const versionNameRaw = $(element).find('.appRowTitle a').text().trim();
+
+            // Removing "beta" or "alpha" from versionName
+            const versionName = versionNameRaw.replace(/\b(beta|alpha)\b/gi, '').trim();
             const releaseDate = $(element).find('.dateyear_utc').text().trim();
             const variantCount = $(element).find('.appRowVariantTag ').text().trim();
+
+            // Fetch variant details
+            const variantDetails = await fetchVariantDetails(versionLink);
 
             return {
                 versionLink,
                 versionName,
                 releaseDate,
-                variantCount
+                variantCount,
+                variantDetails // Add variant details to the item
             };
-        }).get();
+        }).get());
 
         return data;
     } catch (error) {
-        console.error('Veri çekme hatasý:', error.message);
+        console.error('Veri çekme hatas?:', error.message);
+        throw error;
+    }
+}
+
+
+async function fetchVariantDetails(versionLink) {
+    try {
+        const response = await axios.get(versionLink);
+        const $ = cheerio.load(response.data);
+
+        const variantDetails = $('.variants-table .table-row').map((index, element) => {
+            const variantId = $(element).find('.colorLightBlack').text().trim();
+            const architecture = $(element).find('.table-cell').eq(1).text().trim();
+            const minAndroidVersion = $(element).find('.table-cell').eq(2).text().trim();
+            const dpi = $(element).find('.table-cell').eq(3).text().trim();
+
+            return {
+                variantId,
+                architecture,
+                minAndroidVersion,
+                dpi
+            };
+        }).get();
+
+        return variantDetails;
+    } catch (error) {
+        console.error('Varyant detaylarý çekme hatasý:', error.message);
         throw error;
     }
 }
@@ -61,9 +95,9 @@ async function addOrUpdateDataInMongoDB(data, dbName, collectionName) {
             );
         }
 
-        console.log('Veri MongoDB\'ye baþarýyla eklendi veya güncellendi.');
+        console.log('Veri MongoDB\'ye ba?ar?yla eklendi veya güncellendi.');
     } catch (error) {
-        console.error('MongoDB\'ye veri ekleme veya güncelleme hatasý:', error.message);
+        console.error('MongoDB\'ye veri ekleme veya güncelleme hatas?:', error.message);
         throw error;
     } finally {
         await client.close();
