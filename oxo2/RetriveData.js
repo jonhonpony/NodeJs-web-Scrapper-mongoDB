@@ -16,10 +16,13 @@ async function fetchData(url) {
         // Extracting information for each item in first10AppRowDivs
         const data = await Promise.all(first10AppRowDivs.map(async (index, element) => {
             const versionLink = `https://www.apkmirror.com${$(element).find('.appRowTitle a').attr('href')}`;
-            const versionNameRaw = $(element).find('.appRowTitle a').text().trim();
+            let versionIDRaw = $(element).find('.appRowTitle a').text().trim();
 
-            // Removing "beta" or "alpha" from versionName
-            const versionName = versionNameRaw.replace(/\b(beta|alpha)\b/gi, '').trim();
+            // Removing "beta" or "alpha" from versionID
+            let versionID = versionIDRaw.replace(/\b(beta|alpha)\b/gi, '').trim();
+
+            // Removing "Instagram" from versionID
+            versionID = versionID.replace(/Instagram/gi, '').trim();
             const releaseDate = $(element).find('.dateyear_utc').text().trim();
             const variantCount = $(element).find('.appRowVariantTag ').text().trim();
 
@@ -28,7 +31,7 @@ async function fetchData(url) {
 
             return {
                 versionLink,
-                versionName,
+                versionID,
                 releaseDate,
                 variantCount,
                 variantDetails // Add variant details to the item
