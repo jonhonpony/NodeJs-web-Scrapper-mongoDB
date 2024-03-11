@@ -7,26 +7,26 @@ async function fetchData(url) {
         const response = await axios.get(url);
         const $ = cheerio.load(response.data);
 
-        // Selecting div elements with class 'appRow'
+        // appRow class'ýna sahip div'leri çekme iþlemi
         const appRowDivs = $('.appRow');
 
-        // Taking only the first 10 items
+        // apk ilk 10 verisini çekme iþlemi
         const first10AppRowDivs = appRowDivs.slice(0, 10);
 
-        // Extracting information for each item in first10AppRowDivs
+        // apk varyant, versiyon, tarih, link, varyant sayýsý gibi verileri çekme iþlemi
         const data = await Promise.all(first10AppRowDivs.map(async (index, element) => {
             const versionLink = `https://www.apkmirror.com${$(element).find('.appRowTitle a').attr('href')}`;
             let versionIDRaw = $(element).find('.appRowTitle a').text().trim();
 
-            // Removing "beta" or "alpha" from versionID
+            
             let versionID = versionIDRaw.replace(/\b(beta|alpha)\b/gi, '').trim();
 
-            // Removing "Instagram" from versionID
+            
             versionID = versionID.replace(/Instagram/gi, '').trim();
             const releaseDate = $(element).find('.dateyear_utc').text().trim();
             const variantCount = $(element).find('.appRowVariantTag ').text().trim();
 
-            // Fetch variant details
+            
             const variantDetails = await fetchVariantDetails(versionLink);
 
             return {
@@ -34,7 +34,7 @@ async function fetchData(url) {
                 versionID,
                 releaseDate,
                 variantCount,
-                variantDetails // Add variant details to the item
+                variantDetails 
             };
         }).get());
 

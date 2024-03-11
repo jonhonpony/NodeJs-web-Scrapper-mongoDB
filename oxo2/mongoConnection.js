@@ -11,16 +11,16 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-/*I6X7310DikfXUg7DXpOLUpoZSiW5i3aLDCDzWIaG86NUY566kDs0ra9OyKf71mf4*/
+
 async function connectToMongoDB() {
     try {
         await client.connect();
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-        // Baðlantý baþarýlý olduðunda koleksiyon varlýðýný kontrol et
-        const dbName = "OXO_inst"; // Veritabaný adýný güncelleyin
-        const collectionName = "database"; // Koleksiyon adýný güncelleyin
+        // Baðlantý baþarýlý olduðunda koleksiyon varlýðýný kontrol ettikten sonra koleksiyonu oluþtur
+        const dbName = "OXO_inst"; // Veritabaný adýný güncelle
+        const collectionName = "database"; // Koleksiyon adýný güncelle
 
         const db = client.db(dbName);
         const collections = await db.listCollections({ name: collectionName }).toArray();
