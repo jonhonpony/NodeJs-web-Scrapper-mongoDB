@@ -40,7 +40,7 @@ async function fetchData(url) {
 
         return data;
     } catch (error) {
-        console.error('Veri çekme hatas?:', error.message);
+        console.error('Veri çekme hatasý:', error.message);
         throw error;
     }
 }
@@ -98,9 +98,9 @@ async function addOrUpdateDataInMongoDB(data, dbName, collectionName) {
             );
         }
 
-        console.log('Veri MongoDB\'ye ba?ar?yla eklendi veya güncellendi.');
+        console.log('Veri MongoDB\'ye baþarýyla eklendi veya güncellendi.');
     } catch (error) {
-        console.error('MongoDB\'ye veri ekleme veya güncelleme hatas?:', error.message);
+        console.error('MongoDB\'ye veri ekleme veya güncelleme hatasý:', error.message);
         throw error;
     } finally {
         await client.close();

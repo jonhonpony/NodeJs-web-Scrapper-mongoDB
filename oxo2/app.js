@@ -110,13 +110,14 @@ app.put('/data/:id', async (req, res) => {
 });
 
 // DELETE request to remove data
-app.delete('/data/:id', async (req, res) => {
+app.delete('/data/:versionID', async (req, res) => {
     try {
+        const versionID = req.params.versionID;
         const response = await makeRealmRequest('POST', 'deleteOne', {
             collection,
             database,
             dataSource: "Cluster0",
-            query: { "_id": req.params.id }
+            filter: { versionID }
         });
         if (response.deletedCount === 0) {
             return res.status(404).send('No item found');
