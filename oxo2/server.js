@@ -2,6 +2,7 @@
 
 'use strict';
 const http = require('http');
+const app = require('./app.js');
 const { connectToMongoDB, closeMongoDBConnection } = require('./mongoConnection');
 const { fetchData, addOrUpdateDataInMongoDB } = require('./RetriveData');
 
@@ -26,6 +27,8 @@ async function run() {
 }
 
 run().catch(console.dir);
+
+
 
 http.createServer(function (req, res) {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
